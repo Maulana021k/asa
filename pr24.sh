@@ -27,11 +27,16 @@ sudo apt-get install -y \
 curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
 sudo apt-get install -y nodejs
 
-# Install Playwright (Node.js, local install)
-npm init -y
+# Inisialisasi proyek dan install Playwright (lokal, bukan global)
+if [ ! -f package.json ]; then
+  npm init -y
+fi
 npm install playwright
 
-# Install Chromium for Playwright
-npx playwright install chromium
+# Install Firefox untuk Playwright
+npx playwright install firefox
+# (Opsional) jika masih ada dependency yang kurang di OS, jalankan baris di bawah:
+# sudo npx playwright install-deps
 
-echo "[*] Done! You can now run tests with Playwright."
+echo "[*] Done! Playwright siap dengan Firefox."
+echo "[*] Contoh jalanin test: npx playwright test --project=firefox (jika pakai @playwright/test)."
