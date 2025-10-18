@@ -7,17 +7,19 @@ async def main():
     url = "file://" + html_path
 
     async with async_playwright() as p:
-        browser = await p.chromium.launch(headless=True)
-        page = await browser.new_page()
+        # Ganti ke Firefox
+        browser = await p.firefox.launch(headless=True)  # set headless=False kalau mau lihat UI
+        context = await browser.new_context()
+        page = await context.new_page()
+
+        # Dengarkan console lebih awal agar log awal tidak terlewat
+        page.on("console", lambda msg: print(f"[console:{msg.type}] {msg.text}"))
 
         print(f"[*] Membuka {url}")
-        await page.goto(url)
-        await asyncio.sleep(9999999999999999999999999999)
+        await page.goto(url, wait_until="load")
 
-        # ambil console log
-        logs = await page.evaluate("() => console.log")
-        # kalau mau lebih detail, attach listener
-        page.on("console", lambda msg: print("Console:", msg.text))
+        # Biarkan terbuka (contoh: 1 jam). Ubah sesuai kebutuhan.
+        await page.wait_for_timeout(60 * 60 * 1000)
 
         await browser.close()
 
